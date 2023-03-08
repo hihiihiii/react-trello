@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { ITodo } from "../atoms";
+import { ITodo, todoState } from "../atoms";
 import DraggableCard from "./DraggableCard";
 
 interface IBoardProps {
@@ -50,17 +51,35 @@ const Area = styled.div<IAreaProps>`
 `;
 
 const Form = styled.form`
+  padding: 0px 20px;
+`;
+
+const FormInput = styled.input`
+  box-sizing: border-box;
+  border-radius: 5px;
   width: 100%;
-  input {
-    width: 100%;
-    box-sizing: border-box;
-  }
+  padding: 10px;
+  border: none;
+  font-size: 16px;
 `;
 
 const Board = ({ todos, boardId }: IBoardProps) => {
+  const setTodos = useSetRecoilState(todoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
-  const onValid = (data: IForm) => {
+  const onValid = ({ todo }: IForm) => {
+    const newTodo = {
+      id: Date.now(),
+      text: todo,
+    };
+
+    setTodos((allBoard) => {
+      return {
+        ...allBoard,
+        [boardId]: [...allBoard[boardId], newTodo],
+      };
+    });
+
     setValue("todo", "");
   };
 
@@ -68,14 +87,13 @@ const Board = ({ todos, boardId }: IBoardProps) => {
     <Wrapper>
       <Title>{boardId}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
-        <input
+        <FormInput
           {...register("todo", { required: true })}
           type="text"
-          placeholder={`Add task on ${boardId}`}
+          placeholder={`할 일을 추가하세요.`}
         />
       </Form>
       <Droppable droppableId={boardId}>
-        {/* Droppable의 children은 함수여야 */}
         {(magic, info) => {
           return (
             <Area
@@ -86,7 +104,6 @@ const Board = ({ todos, boardId }: IBoardProps) => {
             >
               {todos.map((todo, index) => {
                 return (
-                  //draggable 아이디와 key는 같아야 한다.
                   <DraggableCard
                     key={todo.id}
                     todoId={todo.id}
