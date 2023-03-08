@@ -32,7 +32,11 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
-	line-height: 1;
+	line-height: 1.2;
+	font-weight: 300;
+	font-family: "Source Sans Pro", sans-serif;
+	background-color: ${props=> props.theme.bgColor};
+
 }
 ol, ul {
 	list-style: none;
@@ -49,7 +53,5 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-body{
-  background-color: #7f8fa6;
-}
+
 `
