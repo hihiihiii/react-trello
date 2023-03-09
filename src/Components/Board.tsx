@@ -108,6 +108,7 @@ const Board = ({ todos, boardId }: IBoardProps) => {
                     key={todo.id}
                     todoId={todo.id}
                     todoText={todo.text}
+                    boardId={boardId}
                     index={index}
                   ></DraggableCard>
                 );

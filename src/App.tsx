@@ -23,9 +23,9 @@ const Boards = styled.div`
 
 const App = () => {
   const [todos, setTodos] = useRecoilState(todoState);
+
   const onDragEnd = (info: DropResult) => {
     const { destination, source, draggableId } = info;
-    console.log(source);
 
     if (!destination) return;
     if (source.droppableId === destination?.droppableId) {
