@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   min-height: 200px;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const Title = styled.h2`
@@ -63,6 +64,12 @@ const FormInput = styled.input`
   font-size: 16px;
 `;
 
+const ToolBox = styled.div`
+  display: flex;
+  position: absolute;
+  right: 0;
+`;
+
 const Board = ({ todos, boardId }: IBoardProps) => {
   const setTodos = useSetRecoilState(todoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
@@ -83,9 +90,20 @@ const Board = ({ todos, boardId }: IBoardProps) => {
     setValue("todo", "");
   };
 
+  const handleDeleteBoard = () => {
+    setTodos((allBoard) => {
+      const boardCopy = { ...allBoard };
+      delete boardCopy[boardId];
+      return boardCopy;
+    });
+  };
+
   return (
     <Wrapper>
       <Title>{boardId}</Title>
+      <ToolBox>
+        <div onClick={handleDeleteBoard}>삭제</div>
+      </ToolBox>
       <Form onSubmit={handleSubmit(onValid)}>
         <FormInput
           {...register("todo", { required: true })}
