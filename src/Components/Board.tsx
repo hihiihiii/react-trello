@@ -90,7 +90,7 @@ const Board = ({ todos, boardId }: IBoardProps) => {
         <FormInput
           {...register("todo", { required: true })}
           type="text"
-          placeholder={`할 일을 추가하세요.`}
+          placeholder={`${boardId}를 추가하세요.`}
         />
       </Form>
       <Droppable droppableId={boardId}>

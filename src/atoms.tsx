@@ -33,3 +33,8 @@ export const todoState = atom<ITodoState>({
   },
   effects: [localStorageEffect("trello")],
 });
+
+export const trashState = atom<boolean>({
+  key: "trash",
+  default: false,
+});
