@@ -3,12 +3,12 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import { boardState, todoState } from "./atoms";
 import Board from "./Components/Board";
-import Trash from "./Components/Trash";
-import { AiFillFolderAdd } from "react-icons/ai";
+import { AiFillFolderAdd, AiTwotoneDelete } from "react-icons/ai";
 import { MdDarkMode, MdOutlineWbSunny } from "react-icons/md";
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
   padding-top: 100px;
   padding-left: 50px;
   margin: 0px auto;
@@ -42,11 +42,39 @@ const AddBoard = styled.div`
   }
 `;
 
+const KanBanTitle = styled.h1`
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-weight: bold;
+`;
+
+export const TrashWrapper = styled.div`
+  position: absolute;
+  top: -75px;
+  width: 100px;
+  height: 75px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  background-color: #e74c3c;
+  left: 50%;
+  transform: translate(-50%, 0%);
+`;
+
+const TrashIcon = styled.div`
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 30px;
+`;
+
 const App = () => {
   const [todos, setTodos] = useRecoilState(todoState);
   const [boards, setBoards] = useRecoilState(boardState);
 
-  //보 추가
+  //보드 추가
   const handleAddBoard = () => {
     const boardName = window.prompt("보드이름을 입력하세요.");
     setTodos((allBoards) => {
@@ -110,10 +138,22 @@ const App = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
-        {/* 야간모드 아이콘 및 보드 추가 버튼 */}
-
+        <Droppable droppableId="trashCan">
+          {(magic, info) => {
+            return (
+              <TrashWrapper ref={magic.innerRef} {...magic.droppableProps}>
+                <TrashIcon>
+                  <AiTwotoneDelete></AiTwotoneDelete>
+                </TrashIcon>
+                {magic.placeholder}
+              </TrashWrapper>
+            );
+          }}
+        </Droppable>
         {/* <MdDarkMode></MdDarkMode>
           <MdOutlineWbSunny></MdOutlineWbSunny> */}
+        <KanBanTitle>KanBoard</KanBanTitle>
+
         <AddBoard>
           <AiFillFolderAdd onClick={handleAddBoard}></AiFillFolderAdd>
         </AddBoard>
@@ -136,7 +176,6 @@ const App = () => {
             );
           }}
         </Droppable>
-        <Trash></Trash>
       </Wrapper>
     </DragDropContext>
   );

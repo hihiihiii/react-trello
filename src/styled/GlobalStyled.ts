@@ -1,4 +1,6 @@
 import { createGlobalStyle } from "styled-components";
+import { TrashWrapper } from "../App";
+
 
 export const GlobalStyled = createGlobalStyle`
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -53,5 +55,15 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+	&:has(.dragging) ${TrashWrapper} {
+		transition: 0.3s all ease-in-out;
+		top: 0px;
+	}
+	&:has(.dragging-over-trash) ${TrashWrapper} {
+		top: 0px;
+		transition: 0.3s ease-in-out;
+		transform: translate(-50%, 0%) scale(1.2);
+	}
 
 `

@@ -1,25 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { todoState } from "../atoms";
+import { todoState, trashState } from "../atoms";
 
 const CardDeleteBox = styled.div`
   font-size: 18px;
   display: none;
 `;
 
-const Card = styled.div<{ isDragging: boolean }>`
+const Card = styled.div`
   display: flex;
   align-items: center;
   padding: 10px;
   border-radius: 5px;
-  background-color: ${(props) =>
-    props.isDragging ? "#74b9ff" : props.theme.cardColor};
+  background-color: ${(props) => props.theme.cardColor};
   margin-bottom: 5px;
-  box-shadow: ${(props) =>
-    props.isDragging ? "0px 10px 8px 0px rgba(0,0,0,0.4)" : "none"};
+
+  &.dragging {
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.25);
+  }
+
+  &.dragging-over-trash {
+    background-color: tomato !important;
+    color: white;
+  }
 
   &:hover {
     ${CardDeleteBox} {
@@ -54,19 +60,23 @@ const DraggableCard = ({ todoId, todoText, index, boardId }: IDragableCard) => {
 
   return (
     <Draggable draggableId={todoId + ""} index={index}>
-      {(magic, info) => (
-        <Card
-          isDragging={info.isDragging}
-          {...magic.dragHandleProps}
-          {...magic.draggableProps}
-          ref={magic.innerRef}
-        >
-          <CardText>{todoText}</CardText>
-          <CardDeleteBox onClick={onDelete}>
-            <AiOutlineDelete></AiOutlineDelete>
-          </CardDeleteBox>
-        </Card>
-      )}
+      {(magic, info) => {
+        return (
+          <Card
+            className={`${info.isDragging ? "dragging" : ""} ${
+              info.draggingOver === "trashCan" ? "dragging-over-trash" : ""
+            }`}
+            {...magic.dragHandleProps}
+            {...magic.draggableProps}
+            ref={magic.innerRef}
+          >
+            <CardText>{todoText}</CardText>
+            <CardDeleteBox onClick={onDelete}>
+              <AiOutlineDelete></AiOutlineDelete>
+            </CardDeleteBox>
+          </Card>
+        );
+      }}
     </Draggable>
   );
 };
