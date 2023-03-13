@@ -1,38 +1,52 @@
 import styled from "styled-components";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
-import { todoState } from "./atoms";
+import { boardState, todoState } from "./atoms";
 import Board from "./Components/Board";
 import Trash from "./Components/Trash";
+import { AiFillFolderAdd } from "react-icons/ai";
+import { MdDarkMode, MdOutlineWbSunny } from "react-icons/md";
 
 const Wrapper = styled.div`
   display: flex;
-  width: 100vw;
+  padding-top: 100px;
+  padding-left: 50px;
   margin: 0px auto;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;
 `;
 
 const Boards = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   width: 100%;
+  display: flex;
+  align-items: flex-start;
+  overflow-x: scroll;
   gap: 10px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const AddBoard = styled.div`
-  width: 50px;
+  width: 100px;
   height: 50px;
-  background-color: red;
+  position: absolute;
+  font-size: 36px;
+  top: 20px;
+  right: 20px;
   cursor: pointer;
+  z-index: 1;
+  &:hover {
+    transition: 0.5s all ease-in-out;
+    color: #3498db;
+  }
 `;
 
 const App = () => {
   const [todos, setTodos] = useRecoilState(todoState);
+  const [boards, setBoards] = useRecoilState(boardState);
 
-  //보드 추가
+  //보 추가
   const handleAddBoard = () => {
     const boardName = window.prompt("보드이름을 입력하세요.");
     setTodos((allBoards) => {
@@ -41,13 +55,25 @@ const App = () => {
         [String(boardName)]: [],
       };
     });
+
+    setBoards((allBoards) => {
+      return [...allBoards, String(boardName)];
+    });
   };
 
   const onDragEnd = (info: DropResult) => {
     const { destination, source, draggableId } = info;
     if (!destination) return;
 
-    if (destination?.droppableId === "trashCan") {
+    if (source.droppableId === "boards") {
+      setBoards((prev) => {
+        const boardCopy = [...prev];
+        const item = boardCopy.splice(source.index, 1)[0];
+        console.log(item);
+        boardCopy.splice(destination.index, 0, item);
+        return boardCopy;
+      });
+    } else if (destination?.droppableId === "trashCan") {
       setTodos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
         boardCopy.splice(source.index, 1);
@@ -84,17 +110,32 @@ const App = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
-        <AddBoard onClick={handleAddBoard}></AddBoard>
-        <Boards>
-          {/* object loop */}
-          {Object.keys(todos).map((boardId) => (
-            <Board
-              key={boardId}
-              boardId={boardId}
-              todos={todos[boardId]}
-            ></Board>
-          ))}
-        </Boards>
+        {/* 야간모드 아이콘 및 보드 추가 버튼 */}
+
+        {/* <MdDarkMode></MdDarkMode>
+          <MdOutlineWbSunny></MdOutlineWbSunny> */}
+        <AddBoard>
+          <AiFillFolderAdd onClick={handleAddBoard}></AiFillFolderAdd>
+        </AddBoard>
+
+        <Droppable droppableId="boards" type="board">
+          {(magic) => {
+            return (
+              <Boards ref={magic.innerRef} {...magic.droppableProps}>
+                {/* object loop */}
+                {Object.keys(todos).map((boardId, index) => (
+                  <Board
+                    key={boardId}
+                    todos={todos[boardId]}
+                    boardId={boardId}
+                    boardNum={index}
+                  ></Board>
+                ))}
+                {magic.placeholder}
+              </Boards>
+            );
+          }}
+        </Droppable>
         <Trash></Trash>
       </Wrapper>
     </DragDropContext>

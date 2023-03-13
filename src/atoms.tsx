@@ -34,6 +34,11 @@ export const todoState = atom<ITodoState>({
   effects: [localStorageEffect("trello")],
 });
 
+export const boardState = atom<string[]>({
+  key: "boards",
+  default: ["To Do", "Doing", "Done"],
+});
+
 export const trashState = atom<boolean>({
   key: "trash",
   default: false,

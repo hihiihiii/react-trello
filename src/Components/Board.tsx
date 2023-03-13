@@ -1,14 +1,17 @@
 import { useRef } from "react";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { ITodo, todoState } from "../atoms";
+import { boardState, ITodo, todoState } from "../atoms";
 import DraggableCard from "./DraggableCard";
+import { AiOutlineClose } from "react-icons/ai";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 interface IBoardProps {
   todos: ITodo[];
   boardId: string;
+  boardNum: number;
 }
 
 interface IAreaProps {
@@ -22,7 +25,7 @@ interface IForm {
 const Wrapper = styled.div`
   padding-top: 30px;
   padding-top: 10px;
-  width: 300px;
+  min-width: 300px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.boardColor};
   min-height: 200px;
@@ -67,11 +70,16 @@ const FormInput = styled.input`
 const ToolBox = styled.div`
   display: flex;
   position: absolute;
-  right: 0;
+  right: 10px;
 `;
 
-const Board = ({ todos, boardId }: IBoardProps) => {
+const ToolDelete = styled.div`
+  cursor: pointer;
+`;
+
+const Board = ({ todos, boardId, boardNum }: IBoardProps) => {
   const setTodos = useSetRecoilState(todoState);
+  const setBoards = useSetRecoilState(boardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
   const onValid = ({ todo }: IForm) => {
@@ -102,7 +110,9 @@ const Board = ({ todos, boardId }: IBoardProps) => {
     <Wrapper>
       <Title>{boardId}</Title>
       <ToolBox>
-        <div onClick={handleDeleteBoard}>삭제</div>
+        <ToolDelete onClick={handleDeleteBoard}>
+          <AiOutlineClose></AiOutlineClose>
+        </ToolDelete>
       </ToolBox>
       <Form onSubmit={handleSubmit(onValid)}>
         <FormInput

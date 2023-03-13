@@ -44,7 +44,6 @@ interface IDragableCard {
 const DraggableCard = ({ todoId, todoText, index, boardId }: IDragableCard) => {
   const [todos, setTodos] = useRecoilState(todoState);
 
-  //삭제 기능
   const onDelete = () => {
     setTodos((allBoard) => {
       const boardCopy = [...allBoard[boardId]];
