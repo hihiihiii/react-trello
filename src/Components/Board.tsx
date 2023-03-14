@@ -39,16 +39,13 @@ const Title = styled.h2`
   margin-bottom: 10px;
   font-weight: 400;
   font-size: 24px;
+  color: ${(props) => props.theme.cardTextColor};
 `;
 
 //isDraggingFromThis 드래그가 떠날 때 발생하는 props.
 const Area = styled.div<IAreaProps>`
   background-color: ${(props) =>
-    props.isDraggingOver
-      ? "#ededed"
-      : props.isDraggingFromThis
-      ? "#b2bec3"
-      : "transparent"};
+    props.isDraggingOver ? "#ededed" : "transparent"};
   flex-grow: 1;
   transition: 0.3s ease-in-out;
   padding: 20px;
@@ -65,6 +62,7 @@ const FormInput = styled.input`
   padding: 10px;
   border: none;
   font-size: 16px;
+  background-color: ${(props) => props.theme.cardColor};
 `;
 
 const ToolBox = styled.div`

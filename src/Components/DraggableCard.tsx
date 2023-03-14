@@ -8,6 +8,7 @@ import { todoState, trashState } from "../atoms";
 const CardDeleteBox = styled.div`
   font-size: 18px;
   display: none;
+  cursor: pointer;
 `;
 
 const Card = styled.div`
@@ -37,7 +38,9 @@ const Card = styled.div`
 
 const CardText = styled.span`
   flex: 1;
-  font-size: 22px;
+  font-size: 20px;
+
+  color: ${(props) => props.theme.cardTextColor};
 `;
 
 interface IDragableCard {

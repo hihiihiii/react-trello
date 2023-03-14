@@ -21,15 +21,26 @@ const localStorageEffect =
     });
   };
 
+const localStorageDarkModeEffect =
+  (key: string) =>
+  ({ setSelf, onSet }: any) => {
+    const savedValue = localStorage.getItem(key);
+    if (savedValue != null) {
+      setSelf(JSON.parse(savedValue));
+    }
+    onSet((newValue: boolean) => {
+      localStorage.setItem("darkMode", JSON.stringify(newValue));
+    });
+  };
+
 export const todoState = atom<ITodoState>({
   key: "todo",
   default: {
-    "To Do": [
+    "할 일": [
       { id: Date.now(), text: "반갑습니다." },
       { id: Date.now() + 1, text: "안녕하세요" },
     ],
-    Doing: [],
-    Done: [],
+    안녕하세요: [],
   },
   effects: [localStorageEffect("trello")],
 });
@@ -42,4 +53,10 @@ export const boardState = atom<string[]>({
 export const trashState = atom<boolean>({
   key: "trash",
   default: false,
+});
+
+export const darkModeState = atom<boolean>({
+  key: "darkmode",
+  default: false,
+  effects: [localStorageDarkModeEffect("darkMode")],
 });
