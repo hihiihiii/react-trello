@@ -4,10 +4,9 @@
 프로젝트인 Trello Board입니다.
 
 #### 프로젝트 설명
-1. Drag & Drop 기능이 들어간 KanBan Board입니다.
-2. recoil를 사용하여 보드를 관리 할 수 있습니다.
-3. 
-
+1. react-beautiful-dnd 를 활용한 Trello 느낌의 보드입니다.
+2. Drag & Drop 기능이 들어간 KanBan Board입니다.
+3. recoil를 사용하여 보드를 관리 할 수 있습니다.
 
 ### 라이브러리
 - typescript
@@ -15,12 +14,11 @@
 - recoil
 - react-beautiful-dnd
 
-
 ### 기간 및 인원
-- 23.03.1~ 23.03.15(1인)
+- 23.03.01~ 23.03.15(1인)
 
 #### 배포 주소
-- https://coin-5a2b9.web.app
+- 
 
 
 
