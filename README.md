@@ -13,12 +13,13 @@
 - react-icons
 - recoil
 - react-beautiful-dnd
+- firebase
 
 ### 기간 및 인원
 - 23.03.01~ 23.03.15(1인)
 
 #### 배포 주소
-- 
+- https://trello-kim.web.app
 
 
 
