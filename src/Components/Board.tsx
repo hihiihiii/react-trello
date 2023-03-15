@@ -1,12 +1,11 @@
-import { useRef } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { boardState, ITodo, todoState } from "../atoms";
 import DraggableCard from "./DraggableCard";
 import { AiOutlineClose } from "react-icons/ai";
-import { RxHamburgerMenu } from "react-icons/rx";
+import { useEffect, useRef, useState } from "react";
 
 interface IBoardProps {
   todos: ITodo[];
@@ -23,20 +22,24 @@ interface IForm {
   todo: string;
 }
 const Wrapper = styled.div`
-  padding-top: 30px;
+  position: relative;
   padding-top: 10px;
   min-width: 300px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.boardColor};
   min-height: 200px;
+  max-height: 100vh;
+  overflow: hidden scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   display: flex;
   flex-direction: column;
-  position: relative;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.24);
 `;
 
 const Title = styled.h2`
-  text-align: center;
-  margin-bottom: 10px;
+  flex: 1;
   font-weight: 400;
   font-size: 24px;
   color: ${(props) => props.theme.cardTextColor};
@@ -67,18 +70,60 @@ const FormInput = styled.input`
 
 const ToolBox = styled.div`
   display: flex;
-  position: absolute;
-  right: 10px;
+`;
+
+const FormTop = styled.div`
+  display: flex;
+  padding: 15px 20px;
 `;
 
 const ToolDelete = styled.div`
   cursor: pointer;
 `;
 
+const Empty = styled.div`
+  color: ${(props) => props.theme.cardTextColor};
+`;
+
+const FormTitleTop = styled.div<{ scrollTop: boolean }>`
+  ${(props) =>
+    props.scrollTop &&
+    css`
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      backdrop-filter: blur(0.4rem);
+      width: 300px;
+    `}
+`;
+
 const Board = ({ todos, boardId, boardNum }: IBoardProps) => {
   const setTodos = useSetRecoilState(todoState);
-  const setBoards = useSetRecoilState(boardState);
+
   const { register, setValue, handleSubmit } = useForm<IForm>();
+  const [scroll, setScroll] = useState<boolean>(false);
+
+  // const formRef = useRef<any>(null);
+  // useEffect(() => {
+  //   const handleScroll = (e) => {
+  //     setScroll(true);
+  //   };
+  //   const myDomNode = formRef.current;
+  //   myDomNode.addEventListener("scroll", handleScroll);
+
+  //   return () => {
+  //     myDomNode.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [scroll]);
+
+  const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (e.currentTarget.scrollTop >= 1) {
+      setScroll(true);
+    } else {
+      setScroll(false);
+    }
+  };
 
   const onValid = ({ todo }: IForm) => {
     const newTodo = {
@@ -105,20 +150,24 @@ const Board = ({ todos, boardId, boardNum }: IBoardProps) => {
   };
 
   return (
-    <Wrapper>
-      <Title>{boardId}</Title>
-      <ToolBox>
-        <ToolDelete onClick={handleDeleteBoard}>
-          <AiOutlineClose></AiOutlineClose>
-        </ToolDelete>
-      </ToolBox>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <FormInput
-          {...register("todo", { required: true })}
-          type="text"
-          placeholder={`${boardId}를 추가하세요.`}
-        />
-      </Form>
+    <Wrapper onScroll={onScroll}>
+      <FormTitleTop scrollTop={scroll}>
+        <FormTop>
+          <Title>{boardId}</Title>
+          <ToolBox>
+            <ToolDelete onClick={handleDeleteBoard}>
+              <AiOutlineClose></AiOutlineClose>
+            </ToolDelete>
+          </ToolBox>
+        </FormTop>
+        <Form onSubmit={handleSubmit(onValid)}>
+          <FormInput
+            {...register("todo", { required: true })}
+            type="text"
+            placeholder={`${boardId}를 추가하세요.`}
+          />
+        </Form>
+      </FormTitleTop>
       <Droppable droppableId={boardId}>
         {(magic, info) => {
           return (
@@ -128,6 +177,7 @@ const Board = ({ todos, boardId, boardNum }: IBoardProps) => {
               ref={magic.innerRef}
               {...magic.droppableProps}
             >
+              {todos.length < 1 ? <Empty>보드가 비어있습니다.</Empty> : <></>}
               {todos.map((todo, index) => {
                 return (
                   <DraggableCard

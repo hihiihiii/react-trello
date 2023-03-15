@@ -97,6 +97,7 @@ const Boards = styled.div`
   display: flex;
   align-items: flex-start;
   overflow-x: scroll;
+  padding: 10px 5px;
   gap: 10px;
   &::-webkit-scrollbar {
     display: none;
@@ -120,7 +121,7 @@ const KanBanTitle = styled.h1`
 `;
 
 const KanBanBlock = styled.div`
-  padding: 20px 0px;
+  padding: 20px 5px;
   display: flex;
   align-items: center;
   justify-content: space-between;
